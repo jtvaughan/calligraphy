@@ -1,0 +1,239 @@
+
+==================
+<  Introduction  >
+==================
+
+I'm a calligrapher specializing in Italic scripts.  Creating practice
+sheets with correct and straight slant guides is a pain in the ass, so
+I created these Python 3 scripts to do it for me.  They've been so
+helpful that I've released them to the public domain so anyone can
+modify, distribute, and use them for free.
+
+To use the scripts:
+
+        1. Open a terminal or console and navigate to the directory
+           containing the scripts.  If you don't know what terminals
+           and consoles are (Windows calls them "command prompts") or
+           how to use them, then find an online tutorial: There are
+           lots of them.
+
+           (If you want to save generated files in another directory,
+           add the scripts' directory to your shell's PATH and
+           navigate to the other directory.)
+
+        2. Execute the scripts like any other terminal/console
+           program.  Pass "-h" to a script to get a list of
+           command-line options.
+
+The following sections detail the scripts.
+
+
+=======================
+<  svgitalicsheet.py  >
+=======================
+
+This is the workhorse of this script collection.  It generates a
+Scalable Vector Graphics (SVG) image of an Italic practice sheet.
+
+Italic hands have some defining characteristics, each of which can
+be specified via a command-line parameter:
+
+        * the width of the pen nib ("nib width") used to write
+          the letters (Use the "-n" parameter.);
+
+        * the height of the main body of miniscule (lowercase)
+          letters, called the "x-height" because this is
+          traditionally the height of the miniscule 'x' (Use the
+          "-x" parameter.);
+
+        * the heights of ascenders, which are the long upper
+          portions of letters like 'h', 'k', and 'l' (Use the
+          "-a" parameter.);
+
+        * the heights of descenders, which are the long lower
+          portions (some say "tails") of letters like 'p',
+          'q', and 'y' (Use the "-d" parameter.);
+
+        * the heights of majuscules (uppercase letters), called the
+          "cap height" (Use the "-c" parameter.); and
+
+        * the letter slant in degrees from vertical (Use the
+          "-s" parameter.).
+
+If none of these parameters are specified, then the script generates
+sheets for 2mm nibs with x-heights, ascenders, and descenders of 5 nib
+widths; 7-nib-width cap heights; and no slant guidelines (90-degree
+slant).  None of the above parameters may be negative or zero except
+for the letter slant, which must be between 0 (vertical guide lines)
+and 90 (no guide lines), inclusive.  (Most Italic hands have slants
+between 5 and 15 degrees.)
+
+Generated images have up to five different kinds of lines:
+
+    1. slant guide lines (if the slant angle is less than 90 degrees);
+
+    2. horizontal "baselines" upon which letters' main bodies rest;
+
+    3. horizontal "waistlines," which define the top of the miniscule
+       letter box (whose height is the x-height);
+
+    4. horizontal ascender and descender lines; and
+
+    5. dotted horizontal lines representing the tops of majuscules.
+       (The distance between the baseline and this line is the
+       cap height.)
+
+If you specify the "-l" option, the generated image will also have
+pen ladders, which help beginners visualize letter heights and the
+positions of branches and curves.  The ladders are aligned with the
+baselines.
+
+At a minimum, you must specify the width and height of the image in
+millimeters and the number of image pixels per millimeter (or what
+the script calls the image's "resolution").  I usually use 30
+pixels per millimeter, but it doesn't really matter: SVGs are
+designed to scale to any resolution (hence the "Scalable" in
+"Scalable Vector Graphics").
+
+(Some SVGs can show small artifacts at low resolutions, but the
+images this script generates, which only have straight lines,
+should render fine at low resolutions.)
+
+The script will write the generated image to standard output.
+
+NOTE: If you plan to embed a generated image in a document via Word
+or a similar text processor, bear in mind that the image's
+dimensions and those of its bounding box (e.g., the page minus
+margins) MUST be equal, or else the image might expand or shrink to
+fit and not print to scale.  For example, suppose you want to create
+a practice sheet for 2mm nibs on A4-sized paper.  A4 pages are
+210mm x 297mm.  If the margin is 5mm on every side, then the practice
+sheet image should be 200mm x 287mm.  A 190mm x 290mm image would
+print too large (i.e., your letters would be larger than intended if
+you fit them to the printed lines) and a 220mm x 310mm image would
+appear squashed (i.e., your letters would be smaller than intended).
+
+SVG is an open vector graphics standard maintained and promoted by
+the World Wide Web Consortium (W3C).  To learn more, read the
+Wikipedia article at
+<https://en.wikipedia.org/wiki/Scalable_Vector_Graphics> or
+read the official standard at <http://www.w3.org/TR/SVG/>.  Most
+modern graphical web browsers can open and display SVG images.
+
+
+=========================
+<  fodtitalicsheets.py  >
+=========================
+
+This script combines SVG images generated by svgitalicsheet.py (see
+above) into a single flat OpenDocument text file.  The resulting
+text file is written to standard output.
+
+Each image is centered in its own page.  The pages are ordered as
+specified on the command line.
+
+Four arguments are required:
+
+        * the width of each page;
+        * the height of each page;
+        * the page margin (same on all four sides); and
+        * the paths of one or more SVG images generated by
+          svgitalicsheet.py.
+
+You can change the page and margin sizes' units via the "-u" option.
+The default is millimeters (mm).
+
+NOTE: This script doesn't verify that the specified images are SVG
+images, were generated by svgitalicsheet.py, and have the same
+dimensions as the specified page (minus margins).  You have to do
+that yourself.
+
+OpenDocument is an open document standard maintained and promoted
+by the Organization for the Advancement of Structured Information
+Standards (OASIS).  It is also an ISO/IEC international standard
+(ISO/IEC 26300:2006/Amd 1:2012).  To learn more, read the
+Wikipedia article at <https://en.wikipedia.org/wiki/OpenDocument>
+or order a copy of the ISO/IEC standard at <http://www.iso.org>.
+The open-source office suite called "LibreOffice" uses
+OpenDocument; see its website at <http://www.libreoffice.org>.
+LibreOffice can also convert OpenDocument files to Adobe PDFs,
+which are more widely supported.
+
+
+=====================
+<  italicsheets.py  >
+=====================
+
+This script uses both svgitalicsheet.py and fodtitalicsheets.py to
+generate SVG images and OpenDocument files of various page sizes
+for various nib widths.  Think of it as the master script: You
+specify the characteristics of the Italic hand you'd like to
+practice (x-height, ascender and descender heights, slant angle, etc.,
+as in svgitalicsheet.py), the nib widths you'd like to use, and the
+dimensions and margins of the pages you'd like to practice on, and
+this script generates appropriate SVG images and OpenDocument files.
+
+italicsheets.py accepts most svgitalicsheet.py options.  It includes
+some options that let you specify patterns for the generated files'
+names and the OpenDocument files' titles and descriptions.  The only
+required argument is a list of one or more nib widths in millimeters.
+
+The dimensions and margins of each page size are read from standard
+input.  It should be formatted as a tab-separated value (TSV) file.
+Each line corresponds to one paper size and has four fields:
+
+        1. the width of the page in millimeters;
+
+        2. the height of the page in millimeters;
+
+        3. the size of the margin in millimeters (same on all sides);
+           and
+
+        4. an identifier/nickname for the page type (e.g., a4 or
+           letter).
+
+For example, A4 portrait and landscape pages with 5mm margins might be
+specified thus:
+
+        210	297	5	a4
+        297	210	5	a4l
+
+The file paper-types.txt contains definitions for some common paper
+sizes.  (Landscape formats have an "l" suffix in their nicknames, but
+the script doesn't require this.)
+
+The SVG and OpenDocument files will be saved to the current working
+directory (the directory in which the script was invoked).
+The directories containing svgitalicsheet.py and fodtitalicsheets.py
+must be in your shell's PATH.
+
+Specify the "-v" (--verbose) option if you want to see the
+script in action.
+
+
+============================
+<  svgitalicslantsheet.py  >
+============================
+
+This script generates an SVG image of slant guidelines.  It
+functions like svgitalicsheet.py but doesn't generate baselines,
+waist lines, and ascender and descender lines.  The images are
+useful when you're working with ruled or grid paper but need
+help maintaining a consistent letter slant.
+
+The options are similar to svgitalicsheet.py's.  Please check
+the script's help message (specify the '-h' option) for more
+information.
+
+
+
+    -------<<<<<<<<--------########-------->>>>>>>>--------
+
+
+I (Jordan Vaughan) have released these scripts, paper-types.txt,
+and this README file into the public domain.  For more information,
+see the file COPYING.
+
+Have fun!  ;-)
+Jordan
+
