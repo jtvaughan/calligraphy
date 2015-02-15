@@ -226,6 +226,18 @@ the script's help message (specify the '-h' option) for more
 information.
 
 
+============================
+<  svgitalicslantsheet.py  >
+============================
+
+This script generates an SVG image of a grid of squares.  Such
+images are useful when you only care about the x-height of your
+letters.  It's also possible to disable vertical lines in the
+generated image, producing an image suitable for ruled paper.
+
+Please check the script's help message (specify the '-h' option)
+for more information.
+
 
     -------<<<<<<<<--------########-------->>>>>>>>--------
 
